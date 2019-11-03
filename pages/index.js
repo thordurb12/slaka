@@ -3,8 +3,8 @@ import Link from 'next/link'
 import Head from '../components/head'
 import Nav from '../components/nav'
 import Prismic from 'prismic-javascript'
-import { Date, RichText } from 'prismic-reactjs'
 import HomePage from './components/HomePage';
+import { Date, RichText } from 'prismic-reactjs'
 
 
 const apiEndpoint = 'https://salka.cdn.prismic.io/api/v2'
@@ -29,16 +29,26 @@ const Home = () => {
     fetchData()
   }, [])
 
+  const linkResolver = (doc) => {
+    // Pretty URLs for known types
+    if (doc.type === 'blog') return `/post/${doc.uid}`
+    if (doc.type === 'page') return `/${doc.uid}`
+    // Fallback for other types, in case new custom types get created
+    return `/doc/${doc.id}`
+  }
+
   return (
     <React.Fragment>
       {
         doc ? (
           <div>
-            <HomePage />
-            <div>
-              <h1>{RichText.asText(doc.data.title)}</h1>
-              <img alt='cover' src={doc.data.image.url} />
-            </div>
+            <HomePage
+              title={doc.data.title}
+              img={doc.data.image.url}
+              description={doc.data.description}
+              linkResolver={linkResolver}
+            />
+
           </div>
         ) : <div>No content</div>
       }
