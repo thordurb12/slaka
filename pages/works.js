@@ -19,7 +19,9 @@ export default function Works() {
     React.useEffect(() => {
         const fetchData = async () => {
             const response = await Client.query(
-                Prismic.Predicates.at('document.type', 'page')
+
+                Prismic.Predicates.in('my.page.uid', ['quickstart'])
+
             )
             if (response) {
                 setDocData(response.results[0])
